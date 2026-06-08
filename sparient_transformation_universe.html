@@ -1,0 +1,866 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --midnight:#071426;
+  --space:#0D1B3E;
+  --graphite:#1A1F2E;
+  --copper:#C97932;
+  --amber:#FFB347;
+  --platinum:#F8FAFC;
+  --glass:rgba(248,250,252,0.04);
+  --glass-border:rgba(248,250,252,0.07);
+  --glow-copper:rgba(201,121,50,0.18);
+  --glow-amber:rgba(255,179,71,0.12);
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Inter',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--midnight);color:var(--platinum);overflow-x:hidden;cursor:none}
+
+/* CURSOR */
+#cur{position:fixed;width:8px;height:8px;background:var(--amber);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .3s,height .3s;mix-blend-mode:screen}
+#cur-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(255,179,71,0.3);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%)}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 52px}
+.nav-veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,20,38,0.85) 0%,transparent 100%);backdrop-filter:blur(0px);pointer-events:none;transition:backdrop-filter .5s}
+nav.solid .nav-veil{backdrop-filter:blur(20px);background:rgba(7,20,38,0.92)}
+.nav-logo{position:relative;z-index:1;font-family:var(--serif);font-size:21px;font-weight:300;letter-spacing:2px;color:var(--platinum);text-transform:uppercase}
+.nav-logo em{font-style:normal;color:var(--amber);font-weight:400}
+.nav-links{position:relative;z-index:1;display:flex;gap:36px}
+.nav-links a{font-size:11px;font-weight:400;letter-spacing:2px;text-transform:uppercase;color:rgba(248,250,252,0.35);text-decoration:none;transition:color .3s}
+.nav-links a:hover{color:var(--platinum)}
+.nav-contact{position:relative;z-index:1;font-size:11px;font-weight:400;letter-spacing:2px;text-transform:uppercase;color:rgba(201,121,50,0.8);border:1px solid rgba(201,121,50,0.25);padding:10px 24px;border-radius:2px;cursor:pointer;transition:all .4s;background:transparent}
+.nav-contact:hover{color:var(--amber);border-color:rgba(255,179,71,0.5);background:rgba(201,121,50,0.06)}
+
+/* HERO */
+.hero{position:relative;height:100vh;min-height:700px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+#mesh-canvas{position:absolute;inset:0;z-index:1}
+.hero-atmos{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 80% 60% at 50% 20%,rgba(13,27,62,0.9) 0%,rgba(7,20,38,0) 70%),radial-gradient(ellipse 50% 40% at 20% 80%,rgba(201,121,50,0.06) 0%,transparent 60%),radial-gradient(ellipse 40% 50% at 80% 60%,rgba(255,179,71,0.04) 0%,transparent 60%)}
+.hero-vignette{position:absolute;inset:0;z-index:2;background:radial-gradient(ellipse 100% 100% at 50% 50%,transparent 40%,rgba(7,20,38,0.7) 100%)}
+.hero-inner{position:relative;z-index:3;text-align:center;max-width:820px;padding:0 40px}
+.hero-signal{display:inline-flex;align-items:center;gap:12px;margin-bottom:48px;font-size:10px;font-weight:400;letter-spacing:4px;text-transform:uppercase;color:rgba(201,121,50,0.6)}
+.hero-signal-line{width:40px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,121,50,0.5))}
+.hero-signal-line.r{background:linear-gradient(90deg,rgba(201,121,50,0.5),transparent)}
+.hero-title{font-family:var(--serif);font-size:clamp(56px,8vw,110px);font-weight:300;line-height:.93;letter-spacing:-1px;color:var(--platinum);margin-bottom:0}
+.hero-title .italic{font-style:italic;color:rgba(248,250,252,0.55);font-weight:300}
+.hero-title .glow{color:var(--platinum);position:relative}
+.hero-title .glow::after{content:attr(data-t);position:absolute;inset:0;filter:blur(20px);opacity:.3;color:var(--amber)}
+.hero-divider{width:1px;height:60px;background:linear-gradient(180deg,transparent,rgba(201,121,50,0.4),transparent);margin:40px auto}
+.hero-sub{font-size:14px;font-weight:300;letter-spacing:1px;line-height:1.9;color:rgba(248,250,252,0.38);max-width:460px;margin:0 auto}
+.hero-ctas{display:flex;gap:20px;justify-content:center;margin-top:52px}
+.btn-primary{font-size:11px;font-weight:400;letter-spacing:3px;text-transform:uppercase;color:var(--midnight);background:linear-gradient(135deg,var(--copper),var(--amber));padding:16px 40px;border-radius:2px;border:none;cursor:pointer;transition:all .4s;position:relative;overflow:hidden}
+.btn-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--amber),var(--copper));opacity:0;transition:opacity .4s}
+.btn-primary:hover::before{opacity:1}
+.btn-primary span{position:relative;z-index:1}
+.btn-ghost{font-size:11px;font-weight:400;letter-spacing:3px;text-transform:uppercase;color:rgba(248,250,252,0.45);background:transparent;padding:16px 40px;border-radius:2px;border:1px solid rgba(248,250,252,0.1);cursor:pointer;transition:all .4s}
+.btn-ghost:hover{color:var(--platinum);border-color:rgba(248,250,252,0.25)}
+.hero-scroll-indicator{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:8px}
+.scroll-word{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(248,250,252,0.2)}
+.scroll-track{width:1px;height:50px;background:rgba(248,250,252,0.08);position:relative;overflow:hidden}
+.scroll-fill{position:absolute;top:-100%;left:0;width:100%;height:100%;background:linear-gradient(180deg,transparent,var(--amber));animation:sfill 2s ease-in-out infinite}
+@keyframes sfill{to{top:200%}}
+
+/* MESH SECTION */
+.mesh-section{position:relative;background:var(--midnight);padding:0;overflow:hidden}
+.mesh-reveal{position:relative;padding:140px 52px;max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center}
+.mesh-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,121,50,0.5);margin-bottom:28px}
+.mesh-title{font-family:var(--serif);font-size:clamp(38px,5vw,70px);font-weight:300;line-height:1.0;letter-spacing:-.5px;color:var(--platinum)}
+.mesh-title em{font-style:italic;color:rgba(248,250,252,0.4)}
+.mesh-body{font-size:14px;font-weight:300;color:rgba(248,250,252,0.35);line-height:2;margin-top:28px;letter-spacing:.3px}
+.mesh-threads{display:flex;flex-direction:column;gap:2px;margin-top:48px}
+.thread{display:flex;align-items:center;gap:16px;padding:20px 0;border-bottom:1px solid rgba(248,250,252,0.04);cursor:pointer;transition:all .4s}
+.thread:hover{padding-left:8px}
+.thread-glow{width:3px;height:32px;border-radius:2px;flex-shrink:0;transition:all .4s;background:rgba(248,250,252,0.08)}
+.thread:hover .thread-glow{background:linear-gradient(180deg,var(--copper),var(--amber));box-shadow:0 0 12px rgba(201,121,50,0.4)}
+.thread-label{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(248,250,252,0.3);transition:color .4s}
+.thread:hover .thread-label{color:rgba(248,250,252,0.8)}
+.thread-sub{font-size:11px;color:rgba(248,250,252,0.15);margin-left:auto;letter-spacing:1px;transition:color .4s;white-space:nowrap}
+.thread:hover .thread-sub{color:rgba(201,121,50,0.6)}
+.mesh-vis{position:relative;height:500px}
+#mesh2-canvas{width:100%;height:100%}
+
+/* GLASS PANEL SECTION */
+.glass-section{position:relative;padding:140px 52px;background:linear-gradient(180deg,var(--midnight) 0%,var(--space) 50%,var(--midnight) 100%);overflow:hidden}
+.glass-section::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(201,121,50,0.05) 0%,transparent 60%);pointer-events:none}
+.glass-inner{max-width:1200px;margin:0 auto}
+.glass-header{text-align:center;margin-bottom:80px}
+.section-kicker{font-size:10px;letter-spacing:5px;text-transform:uppercase;color:rgba(201,121,50,0.45);margin-bottom:24px;display:block}
+.glass-title{font-family:var(--serif);font-size:clamp(40px,5vw,72px);font-weight:300;line-height:1.0;letter-spacing:-.5px}
+.glass-title em{font-style:italic;color:rgba(248,250,252,0.3)}
+.glass-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(248,250,252,0.04);border:1px solid rgba(248,250,252,0.06)}
+.glass-card{background:rgba(7,20,38,0.9);padding:48px 32px;position:relative;overflow:hidden;cursor:pointer;transition:background .5s}
+.glass-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,121,50,0.06) 0%,transparent 60%);opacity:0;transition:opacity .5s}
+.glass-card:hover{background:rgba(13,27,62,0.95)}
+.glass-card:hover::before{opacity:1}
+.glass-card::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:linear-gradient(90deg,var(--copper),var(--amber));transition:width .5s cubic-bezier(0.16,1,0.3,1)}
+.glass-card:hover::after{width:100%}
+.card-index{font-family:var(--serif);font-size:48px;font-weight:300;color:rgba(248,250,252,0.04);line-height:1;margin-bottom:32px;transition:color .4s}
+.glass-card:hover .card-index{color:rgba(201,121,50,0.12)}
+.card-rule{width:24px;height:1px;background:rgba(248,250,252,0.12);margin-bottom:20px;transition:all .5s}
+.glass-card:hover .card-rule{width:40px;background:rgba(201,121,50,0.5)}
+.card-title{font-size:13px;font-weight:400;letter-spacing:1.5px;text-transform:uppercase;color:rgba(248,250,252,0.6);line-height:1.5;margin-bottom:16px;transition:color .4s}
+.glass-card:hover .card-title{color:var(--platinum)}
+.card-body{font-size:12px;font-weight:300;color:rgba(248,250,252,0.2);line-height:1.8;transition:color .4s}
+.glass-card:hover .card-body{color:rgba(248,250,252,0.4)}
+.card-arrow{position:absolute;bottom:32px;right:32px;font-size:14px;color:rgba(248,250,252,0.1);transition:all .4s}
+.glass-card:hover .card-arrow{color:var(--amber);transform:translate(3px,-3px)}
+
+/* INDUSTRIES */
+.ind-section{padding:140px 52px;background:var(--midnight);position:relative;overflow:hidden}
+.ind-section::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 10%,rgba(201,121,50,0.2) 50%,transparent 90%)}
+.ind-inner{max-width:1200px;margin:0 auto}
+.ind-header{display:grid;grid-template-columns:1fr 1fr;gap:80px;margin-bottom:80px;align-items:end}
+.ind-title{font-family:var(--serif);font-size:clamp(40px,5vw,68px);font-weight:300;line-height:1.0;letter-spacing:-.5px}
+.ind-title em{font-style:italic;color:rgba(248,250,252,0.3)}
+.ind-intro{font-size:14px;font-weight:300;color:rgba(248,250,252,0.3);line-height:2;letter-spacing:.2px}
+.ind-panels{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.ind-panel{position:relative;overflow:hidden;border-radius:0;cursor:pointer;transition:all .5s cubic-bezier(0.16,1,0.3,1)}
+.ind-panel:hover{transform:translateY(-6px)}
+.ind-panel-bg{position:absolute;inset:0;transition:transform .7s cubic-bezier(0.16,1,0.3,1)}
+.ind-panel:hover .ind-panel-bg{transform:scale(1.04)}
+.edu-bg{background:linear-gradient(160deg,rgba(7,14,32,0.98) 0%,rgba(13,27,62,0.98) 100%)}
+.gov-bg{background:linear-gradient(160deg,rgba(7,18,14,0.98) 0%,rgba(10,32,24,0.98) 100%)}
+.fin-bg{background:linear-gradient(160deg,rgba(26,18,10,0.98) 0%,rgba(32,22,10,0.98) 100%)}
+.aero-bg{background:linear-gradient(160deg,rgba(12,8,26,0.98) 0%,rgba(20,10,46,0.98) 100%)}
+.ind-glow{position:absolute;top:-40%;left:-20%;width:140%;height:140%;opacity:0;transition:opacity .6s;pointer-events:none}
+.edu-glow{background:radial-gradient(ellipse at 50% 30%,rgba(56,138,221,0.1) 0%,transparent 60%)}
+.gov-glow{background:radial-gradient(ellipse at 50% 30%,rgba(29,158,117,0.1) 0%,transparent 60%)}
+.fin-glow{background:radial-gradient(ellipse at 50% 30%,rgba(201,121,50,0.1) 0%,transparent 60%)}
+.aero-glow{background:radial-gradient(ellipse at 50% 30%,rgba(127,119,221,0.1) 0%,transparent 60%)}
+.ind-panel:hover .ind-glow{opacity:1}
+.ind-panel-border{position:absolute;inset:0;border:1px solid rgba(248,250,252,0.06);transition:border-color .5s;pointer-events:none}
+.ind-panel:hover .ind-panel-border{border-color:rgba(201,121,50,0.2)}
+.ind-panel-content{position:relative;z-index:2;padding:40px 32px;min-height:360px;display:flex;flex-direction:column;justify-content:space-between}
+.ind-tag{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(248,250,252,0.2);margin-bottom:auto}
+.ind-num{font-family:var(--serif);font-size:64px;font-weight:300;color:rgba(248,250,252,0.04);line-height:1;position:absolute;top:28px;right:24px;transition:color .5s}
+.ind-panel:hover .ind-num{color:rgba(201,121,50,0.08)}
+.ind-panel-title{font-family:var(--serif);font-size:22px;font-weight:300;color:rgba(248,250,252,0.75);line-height:1.2;letter-spacing:-.2px;margin-bottom:12px;transition:color .5s}
+.ind-panel:hover .ind-panel-title{color:var(--platinum)}
+.ind-panel-body{font-size:12px;font-weight:300;color:rgba(248,250,252,0.2);line-height:1.7;transition:color .4s}
+.ind-panel:hover .ind-panel-body{color:rgba(248,250,252,0.4)}
+.ind-panel-footer{display:flex;align-items:center;justify-content:space-between;margin-top:32px;padding-top:24px;border-top:1px solid rgba(248,250,252,0.05);transition:border-color .4s}
+.ind-panel:hover .ind-panel-footer{border-color:rgba(201,121,50,0.15)}
+.ind-cta{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(201,121,50,0.4);transition:color .4s}
+.ind-panel:hover .ind-cta{color:rgba(201,121,50,0.9)}
+.ind-arrow{width:28px;height:28px;border:1px solid rgba(248,250,252,0.08);display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(248,250,252,0.15);transition:all .4s}
+.ind-panel:hover .ind-arrow{border-color:rgba(201,121,50,0.3);color:var(--amber)}
+
+/* PROOF */
+.proof-section{padding:120px 52px;background:linear-gradient(180deg,var(--midnight),var(--graphite));position:relative;overflow:hidden}
+.proof-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 100%,rgba(201,121,50,0.04) 0%,transparent 70%)}
+.proof-inner{max-width:1200px;margin:0 auto}
+.proof-nums{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(248,250,252,0.04);border:1px solid rgba(248,250,252,0.04)}
+.proof-cell{padding:56px 40px;background:var(--midnight);position:relative;overflow:hidden;cursor:default;transition:background .4s}
+.proof-cell:hover{background:rgba(13,27,62,0.8)}
+.proof-cell::before{content:'';position:absolute;top:0;left:0;width:1px;height:0;background:linear-gradient(180deg,var(--copper),var(--amber));transition:height .6s cubic-bezier(0.16,1,0.3,1)}
+.proof-cell:hover::before{height:100%}
+.proof-num{font-family:var(--serif);font-size:clamp(44px,5vw,72px);font-weight:300;color:var(--platinum);line-height:1;letter-spacing:-1px}
+.proof-num sup{font-size:.35em;color:var(--copper);vertical-align:top;margin-top:.3em}
+.proof-label{font-size:11px;font-weight:300;letter-spacing:1.5px;color:rgba(248,250,252,0.2);margin-top:16px;line-height:1.7;max-width:160px}
+
+/* JOURNEY */
+.journey-section{padding:160px 52px;background:var(--midnight);position:relative;overflow:hidden}
+.journey-inner{max-width:1200px;margin:0 auto}
+.journey-header{text-align:center;margin-bottom:100px}
+.journey-title{font-family:var(--serif);font-size:clamp(44px,6vw,80px);font-weight:300;line-height:.97;letter-spacing:-1px}
+.journey-title em{font-style:italic;color:rgba(248,250,252,0.25)}
+.arc-wrap{position:relative;max-width:900px;margin:0 auto}
+.arc-line{position:absolute;top:28px;left:7%;right:7%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,121,50,0.15) 20%,rgba(201,121,50,0.15) 80%,transparent)}
+.arc-progress{position:absolute;top:28px;left:7%;height:1px;background:linear-gradient(90deg,var(--copper),var(--amber));transition:width 0.6s cubic-bezier(0.16,1,0.3,1);width:14%}
+.arc-steps{display:grid;grid-template-columns:repeat(7,1fr);gap:0;position:relative;z-index:2}
+.arc-step{display:flex;flex-direction:column;align-items:center;gap:20px;cursor:pointer;padding:0 4px}
+.arc-node{width:56px;height:56px;border:1px solid rgba(248,250,252,0.08);display:flex;align-items:center;justify-content:center;font-size:10px;letter-spacing:2px;font-weight:400;color:rgba(248,250,252,0.2);background:var(--midnight);transition:all .5s cubic-bezier(0.16,1,0.3,1);position:relative}
+.arc-node::before{content:'';position:absolute;inset:-1px;background:linear-gradient(135deg,var(--copper),var(--amber));opacity:0;transition:opacity .5s;z-index:-1}
+.arc-step.active .arc-node{color:var(--midnight);background:linear-gradient(135deg,var(--copper),var(--amber));border-color:transparent;box-shadow:0 0 40px rgba(201,121,50,0.3)}
+.arc-step.done .arc-node{border-color:rgba(201,121,50,0.25);color:rgba(201,121,50,0.5)}
+.arc-label{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(248,250,252,0.18);text-align:center;transition:color .4s}
+.arc-step.active .arc-label,.arc-step.done .arc-label{color:rgba(201,121,50,0.5)}
+.arc-step.active .arc-label{color:rgba(248,250,252,0.6)}
+.journey-panel{margin-top:60px;padding:52px 60px;border:1px solid rgba(248,250,252,0.06);position:relative;overflow:hidden;background:rgba(13,27,62,0.3);transition:all .5s}
+.journey-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 10%,rgba(201,121,50,0.3) 50%,transparent 90%)}
+.jp-phase{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,121,50,0.45);margin-bottom:20px}
+.jp-text{font-family:var(--serif);font-size:22px;font-weight:300;color:rgba(248,250,252,0.65);line-height:1.6;letter-spacing:.1px;max-width:700px}
+
+/* CTA */
+.cta-section{position:relative;padding:180px 52px;overflow:hidden;background:var(--midnight)}
+#cta-canvas{position:absolute;inset:0;z-index:0}
+.cta-inner{position:relative;z-index:2;max-width:800px;margin:0 auto;text-align:center}
+.cta-pre{font-size:10px;letter-spacing:5px;text-transform:uppercase;color:rgba(201,121,50,0.35);margin-bottom:40px}
+.cta-title{font-family:var(--serif);font-size:clamp(52px,7vw,100px);font-weight:300;line-height:.93;letter-spacing:-1.5px;margin-bottom:40px}
+.cta-title em{font-style:italic;color:rgba(248,250,252,0.25)}
+.cta-sub{font-size:14px;font-weight:300;color:rgba(248,250,252,0.3);line-height:2;letter-spacing:.3px;margin-bottom:64px}
+.cta-btns{display:flex;gap:16px;justify-content:center}
+
+/* FOOTER */
+footer{background:rgba(3,8,18,0.97);border-top:1px solid rgba(248,250,252,0.04);padding:80px 52px 40px}
+.footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:56px;padding-bottom:56px;border-bottom:1px solid rgba(248,250,252,0.04)}
+.f-wordmark{font-family:var(--serif);font-size:28px;font-weight:300;letter-spacing:4px;text-transform:uppercase;color:var(--platinum);margin-bottom:20px}
+.f-wordmark em{font-style:normal;color:var(--copper)}
+.f-tagline{font-size:11px;font-weight:300;letter-spacing:1px;color:rgba(248,250,252,0.2);line-height:1.8;max-width:220px}
+.f-col h5{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,121,50,0.3);margin-bottom:24px;font-weight:400}
+.f-col a{display:block;font-size:12px;font-weight:300;color:rgba(248,250,252,0.25);text-decoration:none;margin-bottom:12px;letter-spacing:.3px;transition:color .3s}
+.f-col a:hover{color:rgba(248,250,252,0.6)}
+.footer-bottom{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;padding-top:32px}
+.f-copy{font-size:11px;font-weight:300;color:rgba(248,250,252,0.12);letter-spacing:.5px}
+.f-bottom-links{display:flex;gap:24px}
+.f-bottom-links a{font-size:11px;color:rgba(248,250,252,0.15);text-decoration:none;letter-spacing:.5px;transition:color .3s}
+.f-bottom-links a:hover{color:rgba(248,250,252,0.4)}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity 1s cubic-bezier(0.16,1,0.3,1),transform 1s cubic-bezier(0.16,1,0.3,1)}
+.reveal.in{opacity:1;transform:none}
+.reveal-d1{transition-delay:.12s}
+.reveal-d2{transition-delay:.24s}
+.reveal-d3{transition-delay:.36s}
+</style>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<nav id="main-nav">
+  <div class="nav-veil"></div>
+  <div class="nav-logo">Sp<em>a</em>rient</div>
+  <div class="nav-links">
+    <a href="#">Capabilities</a>
+    <a href="#">Industries</a>
+    <a href="#">Thinking</a>
+    <a href="#">Work</a>
+  </div>
+  <div class="nav-contact">Begin Transformation</div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-atmos"></div>
+  <canvas id="mesh-canvas"></canvas>
+  <div class="hero-vignette"></div>
+  <div class="hero-inner">
+    <div class="hero-signal">
+      <div class="hero-signal-line"></div>
+      Transformation Ecosystem
+      <div class="hero-signal-line r"></div>
+    </div>
+    <h1 class="hero-title">
+      <span class="italic">Where complexity</span><br>
+      <span class="glow" data-t="becomes">becomes</span><br>
+      <span class="italic">connected intelligence</span>
+    </h1>
+    <div class="hero-divider"></div>
+    <p class="hero-sub">Sparient weaves technology, data, experience, and validation into a single living ecosystem — purpose-built for organizations that cannot afford to be ordinary.</p>
+    <div class="hero-ctas">
+      <button class="btn-primary"><span>Enter the Ecosystem</span></button>
+      <button class="btn-ghost">View Transformation Stories</button>
+    </div>
+  </div>
+  <div class="hero-scroll-indicator">
+    <div class="scroll-word">Descend</div>
+    <div class="scroll-track"><div class="scroll-fill"></div></div>
+  </div>
+</section>
+
+<!-- ═══ MESH INTRODUCTION ═══ -->
+<section class="mesh-section">
+  <div class="mesh-reveal">
+    <div>
+      <div class="mesh-label reveal">The Transformation Mesh</div>
+      <h2 class="mesh-title reveal">A living architecture — <em>not a service catalogue</em></h2>
+      <p class="mesh-body reveal">Most organizations engage technology partners the way they buy office supplies — one item at a time, from different vendors, with no one accountable for the whole. Sparient operates differently. We architect a connected mesh across every dimension of your transformation, where each capability amplifies the others.</p>
+      <div class="mesh-threads reveal">
+        <div class="thread">
+          <div class="thread-glow"></div>
+          <span class="thread-label">Cloud & Data Engineering</span>
+          <span class="thread-sub">Infrastructure</span>
+        </div>
+        <div class="thread">
+          <div class="thread-glow"></div>
+          <span class="thread-label">AI & Analytics</span>
+          <span class="thread-sub">Intelligence</span>
+        </div>
+        <div class="thread">
+          <div class="thread-glow"></div>
+          <span class="thread-label">ERP & Integration</span>
+          <span class="thread-sub">Continuity</span>
+        </div>
+        <div class="thread">
+          <div class="thread-glow"></div>
+          <span class="thread-label">Content & Experience</span>
+          <span class="thread-sub">Human layer</span>
+        </div>
+        <div class="thread">
+          <div class="thread-glow"></div>
+          <span class="thread-label">Digital Accessibility</span>
+          <span class="thread-sub">Inclusion</span>
+        </div>
+        <div class="thread">
+          <div class="thread-glow"></div>
+          <span class="thread-label">IV&V Validation</span>
+          <span class="thread-sub">Integrity</span>
+        </div>
+        <div class="thread">
+          <div class="thread-glow"></div>
+          <span class="thread-label">Strategic Marketing</span>
+          <span class="thread-sub">Growth</span>
+        </div>
+      </div>
+    </div>
+    <div class="mesh-vis reveal reveal-d2">
+      <canvas id="mesh2-canvas"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CAPABILITIES GLASS GRID ═══ -->
+<section class="glass-section">
+  <div class="glass-inner">
+    <div class="glass-header">
+      <span class="section-kicker reveal">Eight Capabilities</span>
+      <h2 class="glass-title reveal">Forces of <em>connected transformation</em></h2>
+    </div>
+    <div class="glass-grid reveal">
+      <div class="glass-card">
+        <div class="card-index">I</div>
+        <div class="card-rule"></div>
+        <div class="card-title">Cloud & Data Engineering</div>
+        <div class="card-body">Scalable cloud architecture and enterprise data infrastructure built for the demands of modern transformation.</div>
+        <div class="card-arrow">↗</div>
+      </div>
+      <div class="glass-card">
+        <div class="card-index">II</div>
+        <div class="card-rule"></div>
+        <div class="card-title">AI & Analytics</div>
+        <div class="card-body">From predictive intelligence to generative AI — embedded throughout operations, not bolted on top.</div>
+        <div class="card-arrow">↗</div>
+      </div>
+      <div class="glass-card">
+        <div class="card-index">III</div>
+        <div class="card-rule"></div>
+        <div class="card-title">ERP & Integration</div>
+        <div class="card-body">Connecting the systems that were never designed to speak — eliminating silos through architectural intention.</div>
+        <div class="card-arrow">↗</div>
+      </div>
+      <div class="glass-card">
+        <div class="card-index">IV</div>
+        <div class="card-rule"></div>
+        <div class="card-title">Content & Experience</div>
+        <div class="card-body">Digital experiences that earn trust — for students, citizens, customers, and teams alike.</div>
+        <div class="card-arrow">↗</div>
+      </div>
+      <div class="glass-card">
+        <div class="card-index">V</div>
+        <div class="card-rule"></div>
+        <div class="card-title">Digital Workspace & Infrastructure</div>
+        <div class="card-body">The foundational layer where modern work happens — resilient, secure, and ready for what comes next.</div>
+        <div class="card-arrow">↗</div>
+      </div>
+      <div class="glass-card">
+        <div class="card-index">VI</div>
+        <div class="card-rule"></div>
+        <div class="card-title">Digital Accessibility</div>
+        <div class="card-body">WCAG-compliant and inclusive by architecture — because transformation built for some is not transformation at all.</div>
+        <div class="card-arrow">↗</div>
+      </div>
+      <div class="glass-card">
+        <div class="card-index">VII</div>
+        <div class="card-rule"></div>
+        <div class="card-title">IV&V — Validation</div>
+        <div class="card-body">Independent eyes on every critical system — verifying quality before the world sees the work.</div>
+        <div class="card-arrow">↗</div>
+      </div>
+      <div class="glass-card">
+        <div class="card-index">VIII</div>
+        <div class="card-rule"></div>
+        <div class="card-title">Strategic Marketing</div>
+        <div class="card-body">Data-driven growth strategies that connect mission to market — measured against outcomes, not outputs.</div>
+        <div class="card-arrow">↗</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ INDUSTRIES ═══ -->
+<section class="ind-section">
+  <div class="ind-inner">
+    <div class="ind-header">
+      <div>
+        <span class="section-kicker reveal">Domain Authority</span>
+        <h2 class="ind-title reveal">Built for sectors where <em>precision defines legacy</em></h2>
+      </div>
+      <p class="ind-intro reveal">Sparient does not offer generic consulting repackaged for your industry. We carry deep domain understanding built from years of delivering transformation in environments where the cost of failure is measured in public trust, mission outcomes, and human lives.</p>
+    </div>
+    <div class="ind-panels">
+      <div class="ind-panel reveal">
+        <div class="ind-panel-bg edu-bg"></div>
+        <div class="ind-glow edu-glow"></div>
+        <div class="ind-panel-border"></div>
+        <div class="ind-panel-content">
+          <div class="ind-tag">Higher Education</div>
+          <div class="ind-num">I</div>
+          <div>
+            <h3 class="ind-panel-title">The connected campus, realized</h3>
+            <p class="ind-panel-body">Unified portals, research data intelligence, and accessible digital experiences for every student and faculty member.</p>
+            <div class="ind-panel-footer">
+              <span class="ind-cta">Explore</span>
+              <div class="ind-arrow">↗</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ind-panel reveal reveal-d1">
+        <div class="ind-panel-bg gov-bg"></div>
+        <div class="ind-glow gov-glow"></div>
+        <div class="ind-panel-border"></div>
+        <div class="ind-panel-content">
+          <div class="ind-tag">Public Sector</div>
+          <div class="ind-num">II</div>
+          <div>
+            <h3 class="ind-panel-title">Mission-critical government, transformed</h3>
+            <p class="ind-panel-body">Secure, compliant digital infrastructure serving citizens at scale — where accessibility is policy, not preference.</p>
+            <div class="ind-panel-footer">
+              <span class="ind-cta">Explore</span>
+              <div class="ind-arrow">↗</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ind-panel reveal reveal-d2">
+        <div class="ind-panel-bg fin-bg"></div>
+        <div class="ind-glow fin-glow"></div>
+        <div class="ind-panel-border"></div>
+        <div class="ind-panel-content">
+          <div class="ind-tag">Financial Services</div>
+          <div class="ind-num">III</div>
+          <div>
+            <h3 class="ind-panel-title">Fintech precision in regulated environments</h3>
+            <p class="ind-panel-body">Data engineering, AI-driven intelligence, and compliant digital experiences for institutions where trust is the product.</p>
+            <div class="ind-panel-footer">
+              <span class="ind-cta">Explore</span>
+              <div class="ind-arrow">↗</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ind-panel reveal reveal-d3">
+        <div class="ind-panel-bg aero-bg"></div>
+        <div class="ind-glow aero-glow"></div>
+        <div class="ind-panel-border"></div>
+        <div class="ind-panel-content">
+          <div class="ind-tag">Aerospace</div>
+          <div class="ind-num">IV</div>
+          <div>
+            <h3 class="ind-panel-title">Validation for missions that cannot fail</h3>
+            <p class="ind-panel-body">Rigorous IV&V and systems integration for aerospace programs where the engineering standard is measured in absolute reliability.</p>
+            <div class="ind-panel-footer">
+              <span class="ind-cta">Explore</span>
+              <div class="ind-arrow">↗</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROOF ═══ -->
+<section class="proof-section">
+  <div class="proof-inner">
+    <div class="proof-nums reveal">
+      <div class="proof-cell">
+        <div class="proof-num">94<sup>%</sup></div>
+        <div class="proof-label">WCAG 2.1 AA compliance on university portal — day one</div>
+      </div>
+      <div class="proof-cell">
+        <div class="proof-num">3<sup>×</sup></div>
+        <div class="proof-label">Faster reporting cycles after state agency data modernization</div>
+      </div>
+      <div class="proof-cell">
+        <div class="proof-num">0</div>
+        <div class="proof-label">Critical defects post-delivery across IV&V aerospace engagements</div>
+      </div>
+      <div class="proof-cell">
+        <div class="proof-num">8<sup>+</sup></div>
+        <div class="proof-label">Connected capabilities under one accountable transformation partner</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ JOURNEY ═══ -->
+<section class="journey-section">
+  <div class="journey-inner">
+    <div class="journey-header reveal">
+      <span class="section-kicker" style="display:block;margin-bottom:24px">Transformation Arc</span>
+      <h2 class="journey-title">Seven phases.<br><em>One continuous intention.</em></h2>
+    </div>
+    <div class="arc-wrap reveal">
+      <div class="arc-line"></div>
+      <div class="arc-progress" id="arc-prog"></div>
+      <div class="arc-steps" id="arc-steps">
+        <div class="arc-step done" onclick="setArc(0)"><div class="arc-node">01</div><div class="arc-label">Discover</div></div>
+        <div class="arc-step active" onclick="setArc(1)"><div class="arc-node">02</div><div class="arc-label">Strategize</div></div>
+        <div class="arc-step" onclick="setArc(2)"><div class="arc-node">03</div><div class="arc-label">Build</div></div>
+        <div class="arc-step" onclick="setArc(3)"><div class="arc-node">04</div><div class="arc-label">Integrate</div></div>
+        <div class="arc-step" onclick="setArc(4)"><div class="arc-node">05</div><div class="arc-label">Validate</div></div>
+        <div class="arc-step" onclick="setArc(5)"><div class="arc-node">06</div><div class="arc-label">Optimize</div></div>
+        <div class="arc-step" onclick="setArc(6)"><div class="arc-node">07</div><div class="arc-label">Grow</div></div>
+      </div>
+    </div>
+    <div class="journey-panel reveal">
+      <div class="jp-phase" id="jp-phase">Phase 02 — Strategize</div>
+      <p class="jp-text" id="jp-text">We align stakeholders around a unified transformation architecture — not a technology plan, but a living ecosystem strategy where every capability reinforces the others. Success is defined before a single line of code is written.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA ═══ -->
+<section class="cta-section">
+  <canvas id="cta-canvas"></canvas>
+  <div class="cta-inner">
+    <div class="cta-pre reveal">— The work begins here —</div>
+    <h2 class="cta-title reveal">Where does<br>your complexity <em>end?</em></h2>
+    <p class="cta-sub reveal">Every transformation starts with a single conversation. Tell us where the friction lives — and we will show you what connection makes possible.</p>
+    <div class="cta-btns reveal">
+      <button class="btn-primary"><span>Begin Transformation →</span></button>
+      <button class="btn-ghost">Explore Our Work</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="f-wordmark">Sp<em>a</em>rient</div>
+      <p class="f-tagline">Transforming complexity into connected possibilities — across technology, data, experience, and growth.</p>
+    </div>
+    <div class="f-col">
+      <h5>Capabilities</h5>
+      <a href="#">Cloud & Data Engineering</a>
+      <a href="#">AI & Analytics</a>
+      <a href="#">ERP & Integration</a>
+      <a href="#">Content & Experience</a>
+      <a href="#">Digital Accessibility</a>
+      <a href="#">IV&V Validation</a>
+      <a href="#">Strategic Marketing</a>
+    </div>
+    <div class="f-col">
+      <h5>Industries</h5>
+      <a href="#">Higher Education</a>
+      <a href="#">Public Sector</a>
+      <a href="#">Financial Services</a>
+      <a href="#">Aerospace</a>
+    </div>
+    <div class="f-col">
+      <h5>Company</h5>
+      <a href="#">About Sparient</a>
+      <a href="#">Case Studies</a>
+      <a href="#">Insights</a>
+      <a href="#">Accessibility</a>
+      <a href="#">Careers</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="f-copy">© 2025 Sparient Inc. All rights reserved.</div>
+    <div class="f-bottom-links">
+      <a href="#">Privacy</a>
+      <a href="#">Accessibility Statement</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── CURSOR ──
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function animR(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animR)})();
+document.querySelectorAll('button,.nav-contact,.glass-card,.ind-panel,.proof-cell,.arc-step,.thread,.f-col a').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.width='20px';cur.style.height='20px';ring.style.width='56px';ring.style.height='56px';ring.style.borderColor='rgba(201,121,50,0.5)'});
+  el.addEventListener('mouseleave',()=>{cur.style.width='8px';cur.style.height='8px';ring.style.width='36px';ring.style.height='36px';ring.style.borderColor='rgba(255,179,71,0.3)'});
+});
+
+// ── NAV SCROLL ──
+window.addEventListener('scroll',()=>{document.getElementById('main-nav').classList.toggle('solid',window.scrollY>60)});
+
+// ── TRANSFORMATION MESH (HERO) ──
+// Organic flowing filaments — not node graphs. Pure atmosphere.
+(function(){
+  const c=document.getElementById('mesh-canvas');
+  const ctx=c.getContext('2d');
+  let W,H,t=0;
+  function resize(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight}
+  resize();window.addEventListener('resize',resize);
+
+  // Mesh filaments: organic bezier paths that drift and glow
+  const FILAMENTS=50;
+  const fils=[];
+  for(let i=0;i<FILAMENTS;i++){
+    fils.push({
+      x:Math.random()*1.4-.2, y:Math.random()*1.2-.1,
+      dx:(Math.random()-.5)*0.0003, dy:(Math.random()-.5)*0.0003,
+      cp1x:Math.random(), cp1y:Math.random(),
+      cp2x:Math.random(), cp2y:Math.random(),
+      ex:Math.random()*1.4-.2, ey:Math.random()*1.2-.1,
+      life:Math.random()*Math.PI*2,
+      speed:0.003+Math.random()*.004,
+      hue: Math.random()<.6?'copper':'amber',
+      w:Math.random()*.8+.2
+    });
+  }
+
+  // Floating intelligence nodes — sparse, luminous
+  const NODES=18;
+  const nodes=[];
+  for(let i=0;i<NODES;i++){
+    nodes.push({
+      x:Math.random(),y:Math.random(),
+      phase:Math.random()*Math.PI*2,
+      speed:0.006+Math.random()*.01,
+      r:Math.random()*1.5+.5,
+      drift:{x:(Math.random()-.5)*.0002,y:(Math.random()-.5)*.0002}
+    });
+  }
+
+  let mouseX=.5,mouseY=.4;
+  c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();mouseX=e.clientX/W;mouseY=e.clientY/H});
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    t+=.008;
+
+    // Atmospheric glow pools — depth layers
+    const pools=[
+      {x:.5,y:.35,r:.55,c:'rgba(13,27,62,0.6)'},
+      {x:.2,y:.7,c2:true,r:.4,c:'rgba(201,121,50,0.025)'},
+      {x:.8,y:.65,r:.35,c:'rgba(255,179,71,0.018)'},
+      {x:mouseX,y:mouseY,r:.25,c:'rgba(201,121,50,0.035)'}
+    ];
+    pools.forEach(p=>{
+      const g=ctx.createRadialGradient(p.x*W,p.y*H,0,p.x*W,p.y*H,p.r*W);
+      g.addColorStop(0,p.c);g.addColorStop(1,'transparent');
+      ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    });
+
+    // Filaments
+    fils.forEach(f=>{
+      f.life+=f.speed;
+      f.x+=f.dx;f.y+=f.dy;
+      f.cp1x+=f.dx*1.2;f.cp1y+=f.dy*.8;
+      f.cp2x+=f.dx*.8;f.cp2y+=f.dy*1.2;
+      f.ex+=f.dx;f.ey+=f.dy;
+      if(f.x<-.3||f.x>1.3){f.dx*=-1}
+      if(f.y<-.2||f.y>1.2){f.dy*=-1}
+
+      const alpha=Math.max(0,(Math.sin(f.life)*.5+.5))*.18;
+      if(alpha<.01)return;
+
+      ctx.beginPath();
+      ctx.moveTo(f.x*W,f.y*H);
+      ctx.bezierCurveTo(f.cp1x*W,f.cp1y*H,f.cp2x*W,f.cp2y*H,f.ex*W,f.ey*H);
+
+      const grad=ctx.createLinearGradient(f.x*W,f.y*H,f.ex*W,f.ey*H);
+      if(f.hue==='copper'){
+        grad.addColorStop(0,`rgba(201,121,50,0)`);
+        grad.addColorStop(.4,`rgba(201,121,50,${alpha})`);
+        grad.addColorStop(.6,`rgba(255,179,71,${alpha*.7})`);
+        grad.addColorStop(1,`rgba(255,179,71,0)`);
+      } else {
+        grad.addColorStop(0,`rgba(248,250,252,0)`);
+        grad.addColorStop(.5,`rgba(248,250,252,${alpha*.5})`);
+        grad.addColorStop(1,`rgba(248,250,252,0)`);
+      }
+      ctx.strokeStyle=grad;
+      ctx.lineWidth=f.w;
+      ctx.stroke();
+    });
+
+    // Intelligence nodes — luminous, floating
+    nodes.forEach(n=>{
+      n.phase+=n.speed;
+      n.x+=n.drift.x;n.y+=n.drift.y;
+      if(n.x<0||n.x>1)n.drift.x*=-1;
+      if(n.y<0||n.y>1)n.drift.y*=-1;
+      const pulse=Math.sin(n.phase)*.5+.5;
+      const nx=n.x*W,ny=n.y*H;
+      // Outer glow
+      const g=ctx.createRadialGradient(nx,ny,0,nx,ny,n.r*18+pulse*8);
+      g.addColorStop(0,`rgba(201,121,50,${.12*pulse})`);
+      g.addColorStop(1,'transparent');
+      ctx.fillStyle=g;
+      ctx.beginPath();ctx.arc(nx,ny,n.r*18+pulse*8,0,Math.PI*2);ctx.fill();
+      // Core dot
+      ctx.beginPath();ctx.arc(nx,ny,n.r*.8,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,179,71,${.4+.4*pulse})`;ctx.fill();
+    });
+
+    // Mouse-reactive filament toward cursor
+    const mx2=mouseX*W,my2=mouseY*H;
+    nodes.forEach((n,i)=>{
+      if(i>5)return;
+      const nx=n.x*W,ny=n.y*H;
+      const d=Math.sqrt((mx2-nx)**2+(my2-ny)**2);
+      if(d<W*.35){
+        const alpha=(.35-d/W)*.3;
+        const g2=ctx.createLinearGradient(nx,ny,mx2,my2);
+        g2.addColorStop(0,`rgba(201,121,50,${alpha})`);
+        g2.addColorStop(1,`rgba(255,179,71,0)`);
+        ctx.beginPath();ctx.moveTo(nx,ny);
+        ctx.lineTo(mx2,my2);
+        ctx.strokeStyle=g2;ctx.lineWidth=.4;ctx.stroke();
+      }
+    });
+
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
+
+// ── MESH SIDE CANVAS ──
+(function(){
+  const c=document.getElementById('mesh2-canvas');
+  const ctx=c.getContext('2d');
+  let W,H,t=0;
+  function resize(){
+    const wrap=document.getElementById('mesh2-canvas').parentElement;
+    W=c.width=wrap.offsetWidth||400;H=c.height=wrap.offsetHeight||500;
+  }
+  setTimeout(resize,100);window.addEventListener('resize',resize);
+
+  const THREADS=7;
+  const labels=['Cloud','Intelligence','Integration','Experience','Accessibility','Validation','Growth'];
+  const colors=['rgba(201,121,50','rgba(255,179,71','rgba(248,250,252','rgba(150,140,200','rgba(100,180,160','rgba(220,180,100','rgba(180,160,220'];
+  const threads=labels.map((_,i)=>({
+    phase:i*(Math.PI*2/THREADS),speed:0.005+i*.0008,
+    amp:0.08+i*.012, offset:i*.15,
+    label:labels[i],color:colors[i],
+    alpha:.25+i*.04
+  }));
+
+  function draw(){
+    if(!W||!H){requestAnimationFrame(draw);return}
+    ctx.clearRect(0,0,W,H);
+    t+=.006;
+
+    // Background atmospheric pools
+    const bg=ctx.createRadialGradient(W*.5,H*.5,0,W*.5,H*.5,W*.7);
+    bg.addColorStop(0,'rgba(13,27,62,0.15)');bg.addColorStop(1,'transparent');
+    ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+
+    threads.forEach((th,i)=>{
+      const yBase=(i+.5)*(H/THREADS);
+      const pts=[];
+      for(let x=0;x<=W;x+=6){
+        const nx=x/W;
+        const y=yBase+Math.sin(nx*3+t+th.phase)*th.amp*H+Math.cos(nx*2+t*.7+th.offset)*th.amp*.5*H;
+        pts.push({x,y});
+      }
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x,pts[0].y);
+      for(let k=1;k<pts.length-2;k++){
+        const cx=(pts[k].x+pts[k+1].x)/2;
+        const cy=(pts[k].y+pts[k+1].y)/2;
+        ctx.quadraticCurveTo(pts[k].x,pts[k].y,cx,cy);
+      }
+
+      const pulse=Math.sin(t*1.2+th.phase)*.5+.5;
+      const grad=ctx.createLinearGradient(0,0,W,0);
+      grad.addColorStop(0,`${th.color},0)`);
+      grad.addColorStop(.2,`${th.color},${th.alpha*(0.5+.5*pulse)})`);
+      grad.addColorStop(.5,`${th.color},${th.alpha})`);
+      grad.addColorStop(.8,`${th.color},${th.alpha*(0.5+.5*pulse)})`);
+      grad.addColorStop(1,`${th.color},0)`);
+      ctx.strokeStyle=grad;
+      ctx.lineWidth=1+pulse*.5;
+      ctx.stroke();
+
+      // Traveling light bead
+      const beadPos=(t*.15+i*.14)%1;
+      const bx=beadPos*W;
+      const bIdx=Math.floor(beadPos*(pts.length-1));
+      const by=pts[Math.min(bIdx,pts.length-1)].y;
+      const bg2=ctx.createRadialGradient(bx,by,0,bx,by,8);
+      bg2.addColorStop(0,`${th.color},0.9)`);bg2.addColorStop(1,`${th.color},0)`);
+      ctx.fillStyle=bg2;ctx.beginPath();ctx.arc(bx,by,8,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle=`${th.color},1)`;ctx.beginPath();ctx.arc(bx,by,2,0,Math.PI*2);ctx.fill();
+
+      // Label at right edge
+      ctx.font='400 10px Inter,sans-serif';
+      ctx.fillStyle=`${th.color},${.3+.2*pulse})`;
+      ctx.textAlign='left';
+      ctx.letterSpacing='2px';
+      ctx.fillText(th.label.toUpperCase(),W-110,yBase-4);
+    });
+
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
+
+// ── CTA CANVAS ──
+(function(){
+  const c=document.getElementById('cta-canvas');
+  const ctx=c.getContext('2d');
+  let W,H,t=0;
+  function resize(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight}
+  setTimeout(resize,80);window.addEventListener('resize',resize);
+  function draw(){
+    if(!W||!H){requestAnimationFrame(draw);return}
+    ctx.clearRect(0,0,W,H);
+    t+=.004;
+    const cx=W/2,cy=H/2;
+    for(let r=0;r<5;r++){
+      const radius=(r+1)*(Math.min(W,H)*.12)+Math.sin(t+r)*10;
+      const alpha=(.04-r*.006);
+      ctx.beginPath();
+      ctx.arc(cx,cy,radius,0,Math.PI*2);
+      ctx.strokeStyle=`rgba(201,121,50,${alpha})`;
+      ctx.lineWidth=1;ctx.stroke();
+    }
+    for(let i=0;i<12;i++){
+      const angle=i*(Math.PI*2/12)+t*.2;
+      const r1=Math.min(W,H)*.08;
+      const r2=Math.min(W,H)*.28+Math.sin(t*1.5+i)*.02*Math.min(W,H);
+      const alpha=(.04+Math.sin(t+i*.5)*.02);
+      ctx.beginPath();
+      ctx.moveTo(cx+Math.cos(angle)*r1,cy+Math.sin(angle)*r1);
+      ctx.lineTo(cx+Math.cos(angle)*r2,cy+Math.sin(angle)*r2);
+      ctx.strokeStyle=`rgba(201,121,50,${alpha})`;
+      ctx.lineWidth=.5;ctx.stroke();
+    }
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
+
+// ── ARC JOURNEY ──
+const arcData=[
+  {phase:'Phase 01 — Discover',text:'We map your entire landscape — technology, process, data flows, stakeholder needs, accessibility gaps — before a single recommendation is made. Discovery without bias, without preconceptions.'},
+  {phase:'Phase 02 — Strategize',text:'We architect a unified transformation roadmap where every capability reinforces the others. Not a technology plan. A living ecosystem strategy. Success metrics are defined before a single line of code is written.'},
+  {phase:'Phase 03 — Build',text:'Engineering teams build with integration as the first principle, not the last. Every component is designed to connect — to the systems beside it, the data beneath it, and the humans who will use it.'},
+  {phase:'Phase 04 — Integrate',text:'We connect disparate systems, data sources, and platforms into a unified intelligence layer — eliminating silos and enabling data to flow where it is needed, in the form it is needed, the moment it is needed.'},
+  {phase:'Phase 05 — Validate',text:'Independent IV&V teams verify quality, compliance, and performance objectively — separate from those who built it. Trust earned through evidence, not assurance. Quality verified, never assumed.'},
+  {phase:'Phase 06 — Optimize',text:'Post-launch, we measure and tune continuously — using AI-powered intelligence to surface what human observation misses, and to drive compounding gains that grow more valuable over time.'},
+  {phase:'Phase 07 — Grow',text:'With a connected ecosystem in place, growth compounds. We help you scale with the confidence that comes from architecture designed for it — expanding capabilities, unlocking possibilities, accelerating the vision.'}
+];
+let arcCurrent=1;
+function setArc(i){
+  arcCurrent=i;
+  document.querySelectorAll('.arc-step').forEach((s,idx)=>{
+    s.className='arc-step'+(idx<i?' done':idx===i?' active':'');
+  });
+  document.getElementById('jp-phase').textContent=arcData[i].phase;
+  document.getElementById('jp-text').textContent=arcData[i].text;
+  const pct=(i/6)*86+7;
+  document.getElementById('arc-prog').style.width=pct+'%';
+}
+setInterval(()=>{arcCurrent=(arcCurrent+1)%7;setArc(arcCurrent)},4200);
+
+// ── REVEAL ──
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')});
+},{threshold:.07,rootMargin:'0px 0px -32px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
